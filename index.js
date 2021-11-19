@@ -25,13 +25,13 @@ mongoose.connect(config.mongoURI, {
 
 app.get('/', (req, res) => res.send('hello world!!!'))
 
-app.post('/registeer', (req, res) => {
+app.post('/register', (req, res) => {
       //get client info
       const user = new User(req.body)
 
       user.save((err, userInfo) => {
             if(err) return res.json({success:false, err})
-            return res.status(200).json({success:true })
+            return res.status(200).json({success: "회원가입 성공" })
       })
 
 })
