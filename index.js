@@ -1,20 +1,22 @@
+const bodyParser = require('body-parser');
+const {User} = require('./model/user.js'); //user schema
+const mongoose = require('mongoose');
+const config = require('./config/key');
+
+// const fs = require('fs');
+// const data = fs.readFileSync('secret.json');
+// const conf = JSON.parse(data);
+
+
+
 const express = require('express');
 const app = express();
 const port = 5000;
 
-const {User} = require('./model/user.js')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const fs = require('fs');
-const { userInfo } = require('os');
-const data = fs.readFileSync('secret.json');
-const conf = JSON.parse(data);
-
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-
-mongoose.connect(conf.mongoUrl, {
+mongoose.connect(config.mongoURI, {
       useNewUrlParser: true, 
       useUnifiedTopology: true 
 } ).then(() => console.log('MongoDB Connected...'))
