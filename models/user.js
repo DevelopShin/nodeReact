@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
             minlength:5
       },
       repassword:{
-            type:String,
+            type: String,
             minlength:5
       },
 
@@ -41,63 +41,59 @@ const userSchema = mongoose.Schema({
       }
 })
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function(next) { 
       let user = this
-      // bcrypt.compare(user.repassword, user.password, function(err, isMatch){
-      //       console.log(isMatch)
-      //       if(!isMatch) return next(err="비밀번호가 일치하지 않습니다.")
-            
-      // })
 
-      if (user.isModified('repassword')){
-            if(user.password !== user.repassword) return next(err="re비밀번호 불일치")
+      if (user.isModified('password')){
+            // if(user.password !== user.repassword) return next(err="re비밀번호 불일치")
             const salt = bcrypt.genSaltSync(saltRounds);
             const hash = bcrypt.hashSync(user.password, salt);
             user.password = hash
             user.repassword = hash
+            // user.repassword = ""
             next()     
       }else { next() }
 })
 
 
-// userSchema.pre('save', function(next) {
-
-//       let user = this
-//       //비밀번호 암호화
-//       if (user.isModified('password')){
-//             bcrypt.genSalt(saltRounds, function(err, salt){
-//                   if (err) return next(err)
-//                   bcrypt.hash(user.password, salt, function(err, hash){
-//                         if(err) return next(err)
-//                         user.password = hash
-//                         next()
-                  
-//                   })
-      
-//             })
-//       }
-// });
 
 userSchema.methods.comparePassword = function(plainPassword, cb) {
       bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
             console.log(err)
             if (err) return cb(err)
-            cb(err, isMatch)
+            cb(null, isMatch)
       })
 }
-
+const tokenText = "secretToken"
 userSchema.methods.generateToken = function(cb){
       var user = this;
-      console.log('user._id', user._id)
+      console.log('user._id dyrl', user._id)
       // 토큰 생성
-      const token = jwt.sign(user._id.toHexString(), 'secretToken')
+      const token = jwt.sign(user._id.toHexString(), tokenText)
       user.token = token;
+      console.log('token입니다:', token)
       user.save(function(err, user){
+            console.log(err)
             if(err) return cb(err)
             cb(null, user)
       })
       // user._id + "secretToken" = token
 }
+
+
+userSchema.statics.findByToken = function(token, cb) {
+      let user = this
+
+      jwt.verify(token, tokenText, function(err, decoded){  // 토큰 decoding = userID
+            user.findOne({"_id": decoded, "token": token}, function(err, user){
+                  if(err) return cb(err);
+                  cb(null, user)
+            })
+      })
+}
+
+
+
 
 const User = mongoose.model('User', userSchema)
 module.exports = {User}
