@@ -4,12 +4,6 @@ const config = require('./config/key');
 const cookieParser = require('cookie-parser')
 const {auth} = require('./middleware/auth')
 
-// const fs = require('fs');
-// const data = fs.readFileSync('secret.json');
-// const conf = JSON.parse(data);
-
-
-
 const express = require('express');
 const app = express();
 const port = 5000;
@@ -25,6 +19,10 @@ mongoose.connect(config.mongoURI, {
       .catch(err => console.log(err))
 
 app.get('/', (req, res) => res.send('hello world!!!'))
+
+
+app.get('/api/hello', (req, res) =>res.send('hello clients ! !'))
+
 
 
 
