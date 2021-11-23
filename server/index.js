@@ -21,7 +21,7 @@ mongoose.connect(config.mongoURI, {
 app.get('/', (req, res) => res.send('hello world!!!'))
 
 
-app.get('/api/hello', (req, res) =>res.send('hello clients ! !'))
+app.get('/api/hello', (req, res) =>res.send('hello clients !!'))
 
 
 
@@ -31,12 +31,12 @@ app.post('/api/users/register', (req, res) => {
       postUser = req.body
       User.findOne({email: req.body.email},(err, isMatch)=>{
             if(isMatch) return res.json({message: "이미존재하는 이메일입니다."})
-            if(postUser.password !== postUser.repassword) return res.json({message:"비밀번호 확인 틀림"})
+            // if(postUser.password !== postUser.confirmPassword) return res.json({message:"비밀번호 확인 틀림"})
             const user = new User(postUser)
             
             user.save((err, userInfo) => {
-                  if(err) return res.json({success:false, err})
-                  return res.status(200).json({success: "회원가입 성공" })
+                  if(err) return res.json({registerSuccess:false, err})
+                  return res.status(200).json({registerSuccess: true })
             })
 
 

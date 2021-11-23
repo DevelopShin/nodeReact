@@ -13,10 +13,6 @@ const userSchema = mongoose.Schema({
             type:String,
             minlength:5
       },
-      repassword:{
-            type: String,
-            minlength:5
-      },
 
       email: {
             type: String,
